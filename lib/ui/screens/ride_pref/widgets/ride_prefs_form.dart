@@ -1,3 +1,4 @@
+import 'package:blablacar/ui/screens/location_picker/location_picker_screen.dart';
 import 'package:blablacar/ui/theme/theme.dart';
 import 'package:blablacar/ui/widgets/actions/bla_button.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
@@ -46,9 +47,33 @@ class _RidePrefFormState extends State<RidePrefForm> {
   // ----------------------------------
   void onSearched() {}
 
-  void onSelectDeparture() {}
+  void onSelectDeparture() async {
+    final selectedLocation = await Navigator.push<Location>(
+      context, MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(),
+      )
+    );
 
-  void onSelectArrival() {}
+    if(selectedLocation != null) {
+      setState(() {
+        departure = selectedLocation;
+      });
+    }
+  }
+
+  void onSelectArrival() async {
+    final selectedLocation = await Navigator.push<Location>(
+      context, MaterialPageRoute(
+        builder: (context) => LocationPickerScreen(),
+      )
+    );
+
+    if(selectedLocation != null) {
+      setState(() {
+        arrival = selectedLocation;
+      });
+    }
+  }
 
   void pickDate() {}
 
