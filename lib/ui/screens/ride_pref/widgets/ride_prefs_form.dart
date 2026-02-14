@@ -2,6 +2,7 @@ import 'package:blablacar/ui/widgets/inputs/location_picker/location_picker_scre
 import 'package:blablacar/ui/theme/theme.dart';
 import 'package:blablacar/ui/widgets/actions/bla_button.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
+import 'package:blablacar/ui/widgets/inputs/date_picker_screen.dart';
 import 'package:blablacar/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -85,7 +86,17 @@ class _RidePrefFormState extends State<RidePrefForm> {
     });
   }
 
-  void onSelectDate() {}
+  void onSelectDate() async {
+    final selectedDate = await Navigator.push<DateTime>(
+      context,
+      MaterialPageRoute(builder: (context) => DatePickerScreen(selectedDate: departureDate)),
+    );
+    if (selectedDate != null) {
+      setState(() {
+        departureDate = selectedDate;
+      });
+    }
+  }
 
   void onRequestSeat() {}
 
