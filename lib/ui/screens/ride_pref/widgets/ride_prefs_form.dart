@@ -3,6 +3,7 @@ import 'package:blablacar/ui/theme/theme.dart';
 import 'package:blablacar/ui/widgets/actions/bla_button.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
 import 'package:blablacar/ui/widgets/inputs/date_picker_screen.dart';
+import 'package:blablacar/ui/widgets/inputs/request_seat_screen.dart';
 import 'package:blablacar/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -98,7 +99,17 @@ class _RidePrefFormState extends State<RidePrefForm> {
     }
   }
 
-  void onRequestSeat() {}
+  void onRequestSeat() async {
+    final requestedSeat = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => RequestSeatScreen(requestedSeat: requestedSeats)),
+    );
+    if (requestedSeat != null) {
+      setState(() {
+        requestedSeats = requestedSeat;
+      });
+    }
+  }
 
   // ----------------------------------
   // Compute the widgets rendering
