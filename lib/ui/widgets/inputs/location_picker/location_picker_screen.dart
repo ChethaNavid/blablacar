@@ -1,6 +1,6 @@
 import 'package:blablacar/model/ride/locations.dart';
 import 'package:blablacar/services/location_service.dart';
-import 'package:blablacar/ui/screens/location_picker/location_tile.dart';
+import 'package:blablacar/ui/widgets/inputs/location_picker/location_tile.dart';
 import 'package:blablacar/ui/theme/theme.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
 import 'package:flutter/material.dart';
