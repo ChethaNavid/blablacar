@@ -1,7 +1,8 @@
-import 'package:blablacar/ui/screens/location_picker/location_picker_screen.dart';
+import 'package:blablacar/ui/widgets/inputs/location_picker/location_picker_screen.dart';
 import 'package:blablacar/ui/theme/theme.dart';
 import 'package:blablacar/ui/widgets/actions/bla_button.dart';
 import 'package:blablacar/ui/widgets/display/bla_divider.dart';
+import 'package:blablacar/utils/date_time_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../model/ride/locations.dart';
@@ -39,7 +40,10 @@ class _RidePrefFormState extends State<RidePrefForm> {
   @override
   void initState() {
     super.initState();
-    // TODO
+    departure = widget.initRidePref?.departure;
+    arrival = widget.initRidePref?.arrival;
+    departureDate = widget.initRidePref?.departureDate ?? DateTime.now();
+    requestedSeats = widget.initRidePref?.requestedSeats ?? 1;
   }
 
   // ----------------------------------
@@ -49,12 +53,11 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
   void onSelectDeparture() async {
     final selectedLocation = await Navigator.push<Location>(
-      context, MaterialPageRoute(
-        builder: (context) => LocationPickerScreen(),
-      )
+      context,
+      MaterialPageRoute(builder: (context) => LocationPickerScreen()),
     );
 
-    if(selectedLocation != null) {
+    if (selectedLocation != null) {
       setState(() {
         departure = selectedLocation;
       });
@@ -63,21 +66,28 @@ class _RidePrefFormState extends State<RidePrefForm> {
 
   void onSelectArrival() async {
     final selectedLocation = await Navigator.push<Location>(
-      context, MaterialPageRoute(
-        builder: (context) => LocationPickerScreen(),
-      )
+      context,
+      MaterialPageRoute(builder: (context) => LocationPickerScreen()),
     );
 
-    if(selectedLocation != null) {
+    if (selectedLocation != null) {
       setState(() {
         arrival = selectedLocation;
       });
     }
   }
 
-  void pickDate() {}
+  void swapLocation() {
+    setState(() {
+      final temp = departure;
+      departure = arrival;
+      arrival = temp;
+    });
+  }
 
-  void pickSeats() {}
+  void onSelectDate() {}
+
+  void onRequestSeat() {}
 
   // ----------------------------------
   // Compute the widgets rendering
@@ -97,6 +107,13 @@ class _RidePrefFormState extends State<RidePrefForm> {
           icon: Icons.location_on,
           hintText: "Leaving from",
           value: departure,
+          trailing: (departure != null || arrival != null)
+              ? IconButton(
+                  onPressed: swapLocation,
+                  icon: Icon(Icons.swap_vert),
+                  color: BlaColors.primary,
+                )
+              : null,
         ),
 
         BlaDivider(),
@@ -111,17 +128,17 @@ class _RidePrefFormState extends State<RidePrefForm> {
         BlaDivider(),
 
         FormTile(
-          onPressed: pickDate,
+          onPressed: onSelectDate,
           icon: Icons.calendar_month,
-          value: "departureDate",
+          value: DateTimeUtils.formatDateTime(departureDate),
         ),
 
         BlaDivider(),
 
         FormTile(
-          onPressed: pickSeats,
+          onPressed: onRequestSeat,
           icon: Icons.person,
-          value: "requestedSeats",
+          value: requestedSeats,
         ),
 
         BlaButton(
@@ -139,7 +156,7 @@ class FormTile<T> extends StatelessWidget {
   final VoidCallback onPressed;
   final T? value;
   final String? hintText;
-  final String Function(T value)? labelBuilder;
+  final Widget? trailing;
 
   const FormTile({
     super.key,
@@ -147,14 +164,13 @@ class FormTile<T> extends StatelessWidget {
     required this.icon,
     this.value,
     this.hintText,
-    this.labelBuilder,
+    this.trailing,
   });
 
   bool get isPlaceholder => value == null;
 
   String get displayText {
     if (isPlaceholder) return hintText!;
-    if (labelBuilder != null) return labelBuilder!(value as T);
     return value.toString();
   }
 
@@ -165,11 +181,10 @@ class FormTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: IconButton(
-        onPressed: onPressed,
-        icon: Icon(icon, color: BlaColors.iconLight),
-      ),
+      leading: Icon(icon, color: BlaColors.iconLight),
       title: Text(displayText, style: textStyle),
+      trailing: trailing,
+      onTap: onPressed,
     );
   }
 }
